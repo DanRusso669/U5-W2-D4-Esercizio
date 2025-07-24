@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -52,6 +53,13 @@ public class AuthorController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void findByIdAndDelete(@PathVariable UUID authorId) {
         this.authorService.findByIdAndDelete(authorId);
+    }
+
+    @PatchMapping("/{authorId}/avatar")
+    public String uploadAvatar(@PathVariable UUID authorId, @RequestParam("avatar") MultipartFile file) {
+        System.out.println(file.getOriginalFilename());
+        System.out.println(file.getSize());
+        return this.authorService.uploadAvatar(file);
     }
 
 }

@@ -1,5 +1,7 @@
 package danrusso.U5_W2_D3_Esercizio.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import danrusso.U5_W2_D3_Esercizio.entities.Author;
 import danrusso.U5_W2_D3_Esercizio.exceptions.BadRequestException;
 import danrusso.U5_W2_D3_Esercizio.exceptions.NotFoundException;
@@ -12,13 +14,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 public class AuthorService {
     @Autowired
     private AuthorRepository authorRepository;
+
+    @Autowired
+    private Cloudinary imgUploader;
 
 
     public Page<Author> findAll(int pageNumber, int pageSize, String sortBy) {
@@ -69,5 +76,14 @@ public class AuthorService {
     public void findByIdAndDelete(UUID id) {
         Author found = this.findById(id);
         this.authorRepository.delete(found);
+    }
+
+    public String uploadAvatar(MultipartFile file) {
+        try {
+            Map result = imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            return (String) result.get("url");
+        } catch (Exception e) {
+            throw new BadRequestException("Something went wrong while saving the image.");
+        }
     }
 }
