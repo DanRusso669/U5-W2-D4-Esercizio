@@ -59,7 +59,7 @@ public class AuthorController {
     public String uploadAvatar(@PathVariable UUID authorId, @RequestParam("avatar") MultipartFile file) {
         System.out.println(file.getOriginalFilename());
         System.out.println(file.getSize());
-        return this.authorService.uploadAvatar(file);
+        return this.authorService.uploadAvatar(authorId, file);
     }
 
 }

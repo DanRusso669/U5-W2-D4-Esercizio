@@ -78,10 +78,14 @@ public class AuthorService {
         this.authorRepository.delete(found);
     }
 
-    public String uploadAvatar(MultipartFile file) {
+    public String uploadAvatar(UUID authorId, MultipartFile file) {
+        Author found = this.findById(authorId);
         try {
             Map result = imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-            return (String) result.get("url");
+            String imageUrl = (String) result.get("url");
+            found.setAvatar(imageUrl);
+            this.authorRepository.save(found);
+            return imageUrl;
         } catch (Exception e) {
             throw new BadRequestException("Something went wrong while saving the image.");
         }
