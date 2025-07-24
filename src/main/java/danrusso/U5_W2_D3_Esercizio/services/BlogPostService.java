@@ -45,8 +45,10 @@ public class BlogPostService {
     }
 
     public BlogPost saveBlogPost(NewBlogPostDTO payload) {
+        String category = "General";
+        if (!(payload.category() == null)) category = payload.category();
         Author authorFound = this.authorService.findById(payload.authorId());
-        BlogPost newBlogPost = new BlogPost(payload.category(), payload.title(), payload.content(), payload.readingTime(), authorFound);
+        BlogPost newBlogPost = new BlogPost(category, payload.title(), payload.content(), payload.readingTime(), authorFound);
         newBlogPost.setCover("https://picsum.photos/200/300");
         BlogPost savedBP = this.blogPostRepository.save(newBlogPost);
         System.out.println("Blog Post with id " + savedBP.getId() + " saved successfully.");
