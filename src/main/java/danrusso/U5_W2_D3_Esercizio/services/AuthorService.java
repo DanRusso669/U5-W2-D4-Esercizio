@@ -4,7 +4,7 @@ import danrusso.U5_W2_D3_Esercizio.entities.Author;
 import danrusso.U5_W2_D3_Esercizio.exceptions.BadRequestException;
 import danrusso.U5_W2_D3_Esercizio.exceptions.NotFoundException;
 import danrusso.U5_W2_D3_Esercizio.exceptions.UUIDLenghtException;
-import danrusso.U5_W2_D3_Esercizio.payloads.NewAuthorPayload;
+import danrusso.U5_W2_D3_Esercizio.payloads.NewAuthorDTO;
 import danrusso.U5_W2_D3_Esercizio.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,31 +33,31 @@ public class AuthorService {
         return this.authorRepository.findById(id).orElseThrow(() -> new NotFoundException(id, "Author"));
     }
 
-    public Author saveAuthor(NewAuthorPayload payload) {
-        this.authorRepository.findByEmail(payload.getEmail()).ifPresent(author -> {
-            throw new BadRequestException(payload.getEmail());
+    public Author saveAuthor(NewAuthorDTO payload) {
+        this.authorRepository.findByEmail(payload.email()).ifPresent(author -> {
+            throw new BadRequestException(payload.email());
         });
-        Author newAuthor = new Author(payload.getName(), payload.getSurname(), payload.getEmail(), payload.getDOB());
-        newAuthor.setAvatar("https://ui-avatars.com/api/?name=" + payload.getName() + "+" + payload.getSurname());
+        Author newAuthor = new Author(payload.name(), payload.surname(), payload.email(), payload.DOB());
+        newAuthor.setAvatar("https://ui-avatars.com/api/?name=" + payload.name() + "+" + payload.surname());
         Author savedAuthor = authorRepository.save(newAuthor);
         System.out.println("Author with id " + savedAuthor.getId() + " saved successfully.");
         return savedAuthor;
     }
 
-    public Author findByIdAndUpdate(UUID id, NewAuthorPayload payload) {
+    public Author findByIdAndUpdate(UUID id, NewAuthorDTO payload) {
         Author found = this.findById(id);
 
-        if (!found.getEmail().equals(payload.getEmail())) {
-            this.authorRepository.findByEmail(payload.getEmail()).ifPresent(author -> {
-                throw new BadRequestException(payload.getEmail());
+        if (!found.getEmail().equals(payload.email())) {
+            this.authorRepository.findByEmail(payload.email()).ifPresent(author -> {
+                throw new BadRequestException(payload.email());
             });
         }
 
-        found.setName(payload.getName());
-        found.setSurname(payload.getSurname());
-        found.setEmail(payload.getEmail());
-        found.setDOB(payload.getDOB());
-        found.setAvatar("https://ui-avatars.com/api/?name=" + payload.getName() + "+" + payload.getSurname());
+        found.setName(payload.name());
+        found.setSurname(payload.surname());
+        found.setEmail(payload.email());
+        found.setDOB(payload.DOB());
+        found.setAvatar("https://ui-avatars.com/api/?name=" + payload.name() + "+" + payload.surname());
 
         Author modifiedAuthor = authorRepository.save(found);
 

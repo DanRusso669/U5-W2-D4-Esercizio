@@ -4,7 +4,7 @@ import danrusso.U5_W2_D3_Esercizio.entities.Author;
 import danrusso.U5_W2_D3_Esercizio.entities.BlogPost;
 import danrusso.U5_W2_D3_Esercizio.exceptions.NotFoundException;
 import danrusso.U5_W2_D3_Esercizio.exceptions.UUIDLenghtException;
-import danrusso.U5_W2_D3_Esercizio.payloads.NewBlogPostPayload;
+import danrusso.U5_W2_D3_Esercizio.payloads.NewBlogPostDTO;
 import danrusso.U5_W2_D3_Esercizio.repositories.BlogPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,26 +36,26 @@ public class BlogPostService {
         return this.blogPostRepository.findById(id).orElseThrow(() -> new NotFoundException(id, "Blog Post"));
     }
 
-    public BlogPost saveBlogPost(NewBlogPostPayload payload) {
-        Author authorFound = this.authorService.findById(payload.getAuthorId());
-        BlogPost newBlogPost = new BlogPost(payload.getCategory(), payload.getTitle(), payload.getContent(), payload.getReadingTime(), authorFound);
+    public BlogPost saveBlogPost(NewBlogPostDTO payload) {
+        Author authorFound = this.authorService.findById(payload.authorId());
+        BlogPost newBlogPost = new BlogPost(payload.category(), payload.title(), payload.content(), payload.readingTime(), authorFound);
         newBlogPost.setCover("https://picsum.photos/200/300");
         BlogPost savedBP = this.blogPostRepository.save(newBlogPost);
         System.out.println("Blog Post with id " + savedBP.getId() + " saved successfully.");
         return savedBP;
     }
 
-    public BlogPost findByIdAndUpdate(UUID id, NewBlogPostPayload payload) {
+    public BlogPost findByIdAndUpdate(UUID id, NewBlogPostDTO payload) {
         BlogPost found = this.findById(id);
-        Author authorFound = this.authorService.findById(payload.getAuthorId());
+        Author authorFound = this.authorService.findById(payload.authorId());
         if (!found.getAuthor().equals(authorFound)) {
             found.setAuthor(authorFound);
         }
 
-        found.setCategory(payload.getCategory());
-        found.setTitle(payload.getTitle());
-        found.setContent(payload.getContent());
-        found.setReadingTime(payload.getReadingTime());
+        found.setCategory(payload.category());
+        found.setTitle(payload.title());
+        found.setContent(payload.content());
+        found.setReadingTime(payload.readingTime());
 
         BlogPost savedBP = this.blogPostRepository.save(found);
         System.out.println("Blog Post with id " + id + " modified successfully.");

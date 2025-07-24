@@ -85,13 +85,13 @@ public class BlogPost {
     @Override
     public String toString() {
         return "BlogPost{" +
-                "author=" + author +
                 ", id=" + id +
                 ", category='" + category + '\'' +
                 ", title='" + title + '\'' +
                 ", cover='" + cover + '\'' +
                 ", content='" + content + '\'' +
                 ", readingTime=" + readingTime +
+                "author=" + author +
                 '}';
     }
 }

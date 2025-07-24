@@ -2,7 +2,7 @@ package danrusso.U5_W2_D3_Esercizio.controllers;
 
 import danrusso.U5_W2_D3_Esercizio.entities.Author;
 import danrusso.U5_W2_D3_Esercizio.exceptions.ValidationException;
-import danrusso.U5_W2_D3_Esercizio.payloads.NewAuthorPayload;
+import danrusso.U5_W2_D3_Esercizio.payloads.NewAuthorDTO;
 import danrusso.U5_W2_D3_Esercizio.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,7 +28,7 @@ public class AuthorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Author createAuthor(@RequestBody @Validated NewAuthorPayload payload, BindingResult validationResult) {
+    public Author createAuthor(@RequestBody @Validated NewAuthorDTO payload, BindingResult validationResult) {
         if (validationResult.hasErrors()) {
             throw new ValidationException(validationResult.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
         }
@@ -41,7 +41,10 @@ public class AuthorController {
     }
 
     @PutMapping("/{authorId}")
-    public Author findByIdAndUpdate(@PathVariable UUID authorId, @RequestBody NewAuthorPayload payload) {
+    public Author findByIdAndUpdate(@PathVariable UUID authorId, @RequestBody @Validated NewAuthorDTO payload, BindingResult validationResult) {
+        if (validationResult.hasErrors()) {
+            throw new ValidationException(validationResult.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
+        }
         return this.authorService.findByIdAndUpdate(authorId, payload);
     }
 

@@ -13,7 +13,7 @@ public record NewAuthorDTO(
         @Size(min = 3, max = 15, message = "Name's lenght must be between 3 and 15.")
         String surname,
         @NotEmpty(message = "Email is mandatory.")
-        @Email
+        @Email(message = "Email format not valid.")
         String email,
         @NotEmpty(message = "Date of Birth is mandatory.")
         String DOB

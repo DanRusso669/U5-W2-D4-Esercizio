@@ -1,11 +1,15 @@
 package danrusso.U5_W2_D3_Esercizio.controllers;
 
 import danrusso.U5_W2_D3_Esercizio.entities.BlogPost;
-import danrusso.U5_W2_D3_Esercizio.payloads.NewBlogPostPayload;
+import danrusso.U5_W2_D3_Esercizio.exceptions.ValidationException;
+import danrusso.U5_W2_D3_Esercizio.payloads.NewBlogPostDTO;
+import danrusso.U5_W2_D3_Esercizio.payloads.NewBlogPostRespDTO;
 import danrusso.U5_W2_D3_Esercizio.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -25,8 +29,12 @@ public class BlogPostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BlogPost createBlogPost(@RequestBody NewBlogPostPayload payload) {
-        return this.blogPostService.saveBlogPost(payload);
+    public NewBlogPostRespDTO createBlogPost(@RequestBody @Validated NewBlogPostDTO payload, BindingResult validationResults) {
+        if (validationResults.hasErrors()) {
+            throw new ValidationException(validationResults.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
+        }
+        BlogPost newBlogPost = this.blogPostService.saveBlogPost(payload);
+        return new NewBlogPostRespDTO(newBlogPost.getCategory(), newBlogPost.getTitle(), newBlogPost.getContent(), newBlogPost.getReadingTime(), newBlogPost.getAuthor());
     }
 
     @GetMapping("/{blogPostId}")
@@ -35,7 +43,10 @@ public class BlogPostController {
     }
 
     @PutMapping("/{blogPostId}")
-    public BlogPost findByIdAndUpdate(@PathVariable UUID blogPostId, @RequestBody NewBlogPostPayload payload) {
+    public BlogPost findByIdAndUpdate(@PathVariable UUID blogPostId, @RequestBody @Validated NewBlogPostDTO payload, BindingResult validationResults) {
+        if (validationResults.hasErrors()) {
+            throw new ValidationException(validationResults.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
+        }
         return this.blogPostService.findByIdAndUpdate(blogPostId, payload);
     }
 

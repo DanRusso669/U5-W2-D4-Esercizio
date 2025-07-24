@@ -2,7 +2,7 @@ package danrusso.U5_W2_D3_Esercizio.exceptions;
 
 
 import danrusso.U5_W2_D3_Esercizio.payloads.ErrorPayloadListDTO;
-import danrusso.U5_W2_D3_Esercizio.payloads.ErrorsPayload;
+import danrusso.U5_W2_D3_Esercizio.payloads.ErrorsDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,21 +21,21 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorsPayload handleBadRequest(BadRequestException ex) {
-        return new ErrorsPayload(ex.getMessage(), LocalDateTime.now());
+    public ErrorsDTO handleBadRequest(BadRequestException ex) {
+        return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorsPayload handleNotFound(NotFoundException ex) {
-        return new ErrorsPayload(ex.getMessage(), LocalDateTime.now());
+    public ErrorsDTO handleNotFound(NotFoundException ex) {
+        return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
     }
 
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorsPayload handleServerError(Exception ex) {
+    public ErrorsDTO handleServerError(Exception ex) {
         ex.printStackTrace();
-        return new ErrorsPayload("There's been a problem. We are working on it.", LocalDateTime.now());
+        return new ErrorsDTO("There's been a problem. We are working on it.", LocalDateTime.now());
     }
 }
